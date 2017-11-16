@@ -9,19 +9,58 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.1.0/umd/react.development.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.1.0/umd/react-dom.development.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+
+      <script>
+        const MAX = 100;
+        const MIN = 30;
+        var getRandomSeconds = function(){
+          return Math.floor( Math.random() * ( MAX - MIN + 1) + MIN )
+        }
+      </script>
       <script type="text/babel">
-        class Greeting extends React.Component {
-          render() {
-            return (
-              <div>
-                <h1>Hello World!</h1>
-              </div>
-            );
+
+      class CountDown extends React.Component {
+
+        constructor(props) {
+          super(props);
+          this.state = {
+            seconds: getRandomSeconds(),
+            message: "The world will self-destruct in:"
+          };
+        }
+
+
+        tick() {
+          if (this.state.seconds > 0) {
+            this.setState(prevState => ({
+              seconds: prevState.seconds - 1
+            }));
+          }
+          else {
+            this.setState(() => ({
+              seconds: 0,
+              message: "Boom"
+            }));
           }
         }
-        ReactDOM.render(
-          <Greeting />, document.getElementById('app')
-        );
+        componentDidMount() {
+          this.interval = setInterval(() => this.tick(), 1000)
+        }
+
+        componentWillUnmount() {
+          clearInterval(this.interval);
+        }
+        render() {
+          return (
+            <div>
+              <h3>{this.state.message}</h3>
+              <span>{this.state.seconds}</span><span> Seconds</span>
+            </div>
+          )
+        }
+      }
+
+      ReactDOM.render(<CountDown />, document.getElementById('app'));
       </script>
   </body>
 
